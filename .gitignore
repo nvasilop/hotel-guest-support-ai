@@ -1,0 +1,22 @@
+# Environment variables / secrets
+.env
+backend/.env
+*.env
+
+# Keep the example env file so users know how to configure the project
+!.env.example
+!backend/.env.example
+
+# Python virtual environments
+.venv/
+backend/.venv/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+
+# Evaluation output
+eval/results.json

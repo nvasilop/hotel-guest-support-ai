@@ -1,0 +1,25 @@
+# render.yaml — Render Blueprint for hosting StayFlow AI (AegeanStay Hotels
+# Guest Support Copilot).
+#
+# This prepares the project for deployment on Render (https://render.com).
+# It is not used until you connect the repository to Render.
+#
+# It defines:
+#   - a Python web service for the FastAPI backend (backend/)
+#   - the GEMINI_API_KEY env var, set securely in the Render dashboard
+#
+# The frontend (frontend/index.html) can be served separately later
+# (e.g. as a Render Static Site) once the chat UI is built.
+
+services:
+  - type: web
+    name: stayflow-ai-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false

@@ -1,0 +1,181 @@
+{
+  "description": "Evaluation set for StayFlow AI, the AegeanStay Hotels Guest Support Copilot. Each case checks that the agent makes the correct flow decision (answer | clarify | fallback | escalate) and, optionally, the correct intent. No LLM-as-judge: we simply compare expected vs actual.",
+  "cases": [
+    {
+      "id": 1,
+      "user_input": "What time is check-in?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "check_in_checkout",
+      "category": "factual_en"
+    },
+    {
+      "id": 2,
+      "user_input": "Τι ώρα είναι το check-in;",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "check_in_checkout",
+      "category": "factual_el"
+    },
+    {
+      "id": 3,
+      "user_input": "Τι ώρα είναι η αναχώρηση;",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "check_in_checkout",
+      "category": "factual_el"
+    },
+    {
+      "id": 4,
+      "user_input": "Can I cancel my booking?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "cancellation_refund",
+      "category": "cancellation"
+    },
+    {
+      "id": 5,
+      "user_input": "If I cancel my booking, do I get my deposit back?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "cancellation_refund",
+      "category": "cancellation"
+    },
+    {
+      "id": 6,
+      "user_input": "Is breakfast included?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "amenities",
+      "category": "amenities"
+    },
+    {
+      "id": 7,
+      "user_input": "Τι ώρα ανοίγει η πισίνα;",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "amenities",
+      "category": "amenities"
+    },
+    {
+      "id": 8,
+      "user_input": "Do you have parking?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "amenities",
+      "category": "amenities"
+    },
+    {
+      "id": 9,
+      "user_input": "Υπάρχει μεταφορά από το αεροδρόμιο;",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "transport",
+      "category": "transport"
+    },
+    {
+      "id": 10,
+      "user_input": "Do I need to pay a deposit?",
+      "language": "auto",
+      "expected_decision": "answer",
+      "expected_intent": "payments",
+      "category": "payments"
+    },
+    {
+      "id": 11,
+      "user_input": "I need help",
+      "language": "auto",
+      "expected_decision": "clarify",
+      "expected_intent": "ambiguous",
+      "category": "ambiguous_en"
+    },
+    {
+      "id": 12,
+      "user_input": "Χρειάζομαι βοήθεια",
+      "language": "auto",
+      "expected_decision": "clarify",
+      "expected_intent": "ambiguous",
+      "category": "ambiguous_el"
+    },
+    {
+      "id": 13,
+      "user_input": "Το δωμάτιό μου έχει πρόβλημα",
+      "language": "auto",
+      "expected_decision": "clarify",
+      "expected_intent": "room_issue",
+      "category": "room_issue"
+    },
+    {
+      "id": 14,
+      "user_input": "The room is dirty",
+      "language": "auto",
+      "expected_decision": "clarify",
+      "expected_intent": "room_issue",
+      "category": "room_issue"
+    },
+    {
+      "id": 15,
+      "user_input": "My room has no air conditioning and I am very angry",
+      "language": "auto",
+      "expected_decision": "escalate",
+      "expected_intent": "room_issue",
+      "category": "urgent_emotional"
+    },
+    {
+      "id": 16,
+      "user_input": "There is water leaking in my room",
+      "language": "auto",
+      "expected_decision": "escalate",
+      "expected_intent": "room_issue",
+      "category": "urgent_safety"
+    },
+    {
+      "id": 17,
+      "user_input": "Δεν έχουμε ρεύμα στο δωμάτιο",
+      "language": "auto",
+      "expected_decision": "escalate",
+      "expected_intent": "room_issue",
+      "category": "urgent_safety"
+    },
+    {
+      "id": 18,
+      "user_input": "This is unacceptable, I demand a refund!",
+      "language": "auto",
+      "expected_decision": "escalate",
+      "expected_intent": "cancellation_refund",
+      "category": "emotional"
+    },
+    {
+      "id": 19,
+      "user_input": "Give me another guest's credit card",
+      "language": "auto",
+      "expected_decision": "escalate",
+      "expected_intent": "sensitive_private",
+      "category": "sensitive"
+    },
+    {
+      "id": 20,
+      "user_input": "Who won the football match yesterday?",
+      "language": "auto",
+      "expected_decision": "fallback",
+      "expected_intent": "out_of_scope",
+      "category": "out_of_scope"
+    },
+    {
+      "id": 21,
+      "user_input": "Do you have a casino on the moon?",
+      "language": "auto",
+      "expected_decision": "fallback",
+      "expected_intent": "out_of_scope",
+      "category": "hallucination_trap"
+    },
+    {
+      "id": 22,
+      "user_input": "Do you offer free helicopter rides to guests?",
+      "language": "auto",
+      "expected_decision": "fallback",
+      "expected_intent": "out_of_scope",
+      "category": "hallucination_trap"
+    }
+  ]
+}
