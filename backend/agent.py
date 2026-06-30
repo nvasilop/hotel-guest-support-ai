@@ -15,6 +15,7 @@ just return a ready-made template from the playbook.
 """
 
 import os
+import re
 
 from dotenv import load_dotenv
 from google import genai
@@ -77,8 +78,10 @@ CHECKIN_CHECKOUT_KEYWORDS = [
 ]
 
 CANCELLATION_REFUND_KEYWORDS = [
-    "cancel", "cancellation", "refund", "no-show", "no show",
-    "ακύρωση", "ακυρώσω", "επιστροφή χρημάτων", "επιστροφή χρημ",
+    "cancel", "cancel booking", "cancel my booking", "cancel reservation",
+    "cancellation", "booking cancellation", "refund", "no-show", "no show",
+    "ακύρωση", "ακύρωση κράτησης", "ακυρώσω", "μπορώ να ακυρώσω",
+    "επιστροφή χρημάτων", "επιστροφή χρημ",
 ]
 
 AMENITIES_KEYWORDS = [
@@ -279,31 +282,54 @@ def _build_response(
 # --- Grounded answer generation ---------------------------------------------
 
 
-def generate_grounded_answer(message: str, language: str, retrieved_chunks: list) -> str:
-    """Use Gemini to answer the question using ONLY the retrieved chunks.
+# Shown only when the Gemini call itself fails (e.g. network/quota error). It is
+# deliberately different from the knowledge-base fallback: here we DID find
+# relevant context, so we must not claim the information is unavailable.
+_GENERATION_ERROR_MESSAGE = {
+    "en": (
+        "Sorry, I'm having trouble generating a reply right now. Please try again "
+        "in a moment, or contact our hotel staff for help."
+    ),
+    "el": (
+        "Συγγνώμη, αντιμετωπίζω πρόβλημα στη δημιουργία απάντησης αυτή τη στιγμή. "
+        "Παρακαλώ δοκιμάστε ξανά σε λίγο ή επικοινωνήστε με το προσωπικό του "
+        "ξενοδοχείου."
+    ),
+}
 
-    If Gemini fails for any reason, we return a polite fallback message so the
-    app keeps running instead of crashing.
+
+def generate_grounded_answer(message: str, language: str, retrieved_chunks: list) -> str:
+    """Use Gemini to answer the question using the retrieved hotel context.
+
+    The context here has already passed the retrieval threshold, so it is
+    relevant. The prompt tells Gemini to actually use it and NOT to claim the
+    information is unavailable when it is present.
+
+    If the Gemini call fails (network/quota), we return a short "try again"
+    message rather than a "no information" message, because we did find context.
     """
-    # Build a single context string from the retrieved knowledge base chunks.
-    context = "\n\n---\n\n".join(
-        f"[Source: {chunk['source']}]\n{chunk['text']}" for chunk in retrieved_chunks
+    # Build a clearly labelled context block from the retrieved chunks.
+    context = "\n\n".join(
+        f"[source: {chunk['source']}]\n{chunk['text']}" for chunk in retrieved_chunks
     )
 
-    # Tell Gemini exactly how to behave: stay grounded, no invented policies,
-    # answer in the guest's language, and be concise and friendly.
     language_name = "Greek" if language == "el" else "English"
     user_prompt = (
-        "Use ONLY the AegeanStay Hotels guest support context below to answer the "
+        "You are given hotel support context below. Use the context to answer the "
         "guest's question.\n"
-        "- Do NOT invent AegeanStay Hotels policies or details that are not in the "
-        "context.\n"
-        "- If the context does not contain the answer, say the information is not "
-        "available and recommend contacting the hotel staff.\n"
+        "Rules:\n"
+        "- Do NOT say that information is unavailable if the context contains "
+        "relevant information.\n"
+        "- If the context includes only partial information, answer with what is "
+        "available and mention that the guest can contact hotel staff for "
+        "booking-specific details.\n"
+        "- Only say \"I don't have that information\" if the context truly does not "
+        "contain anything relevant.\n"
+        "- Do NOT invent AegeanStay Hotels policies beyond the context.\n"
         f"- Answer in {language_name}.\n"
-        "- Keep the answer concise, polite, and guest-support friendly.\n\n"
-        f"Context:\n{context}\n\n"
-        f"Guest question: {message}"
+        "- Keep the answer concise and customer-support friendly.\n\n"
+        f"CONTEXT:\n{context}\n\n"
+        f"USER QUESTION:\n{message}"
     )
 
     try:
@@ -314,13 +340,140 @@ def generate_grounded_answer(message: str, language: str, retrieved_chunks: list
             config={"system_instruction": SYSTEM_PROMPT},
         )
         answer = (response.text or "").strip()
-        # If Gemini returns nothing usable, fall back gracefully.
+        # If Gemini returns nothing usable, show the transient-error message.
         if not answer:
-            return get_template("fallback", language)
+            return _GENERATION_ERROR_MESSAGE[language]
         return answer
     except Exception:
-        # Any API/network error -> polite fallback, app stays up.
-        return get_template("fallback", language)
+        # Network/quota error -> honest "try again" message, app stays up.
+        return _GENERATION_ERROR_MESSAGE[language]
+
+
+# --- Guardrail: prevent fallback-style answers when evidence is strong -------
+# Sometimes the model returns a "I don't have that information" style answer (or
+# generation fails) even though RAG retrieved clearly relevant context. When the
+# evidence is strong, that is wrong. These helpers detect such answers and build
+# a simple answer straight from the retrieved context instead, so the demo stays
+# stable and reliable.
+
+# Phrases that signal an unwanted fallback-style answer (checked lowercased).
+_BAD_FALLBACK_PHRASES = [
+    "i don't have that information",
+    "i do not have that information",
+    "don't have that information",
+    "don't have this information",
+    "do not have this information",
+    "information is not available",
+    "i'm having trouble generating",  # our transient-generation message
+    "δεν έχω αυτή την πληροφορία",
+    "δεν βρήκα αυτή την πληροφορία",
+    "δεν είναι διαθέσιμη",
+    "αντιμετωπίζω πρόβλημα στη δημιουργία",  # our transient-generation message
+]
+
+_EXTRACTIVE_LEAD_IN = {
+    "en": "Based on the hotel support information:",
+    "el": "Με βάση τις πληροφορίες υποστήριξης του ξενοδοχείου:",
+}
+
+# Small stopword list so keyword matching focuses on meaningful words.
+_STOPWORDS = {
+    "the", "and", "for", "you", "your", "with", "that", "this", "are", "can",
+    "does", "what", "when", "how", "from", "have", "not", "our", "but", "please",
+    "και", "για", "την", "τον", "της", "στο", "στη", "με", "να", "το", "τι",
+    "είναι", "από", "σας", "μου", "ένα", "μια",
+}
+
+
+def is_bad_fallback_answer(answer: str) -> bool:
+    """Return True if the answer looks like an unwanted fallback message."""
+    if not answer:
+        return True
+    text = answer.lower()
+    return any(phrase in text for phrase in _BAD_FALLBACK_PHRASES)
+
+
+def _tokens(text: str) -> list:
+    """Lowercased words of length >= 3 that are not stopwords (EN/EL aware)."""
+    words = re.findall(r"\w+", text.lower(), flags=re.UNICODE)
+    return [w for w in words if len(w) >= 3 and w not in _STOPWORDS]
+
+
+def _relevance(question_tokens: set, sentence: str) -> int:
+    """Count how many question keywords appear in the sentence.
+
+    Uses simple prefix matching so word variants count (e.g. the question word
+    "cancel" matches "cancelled" / "cancellation" in the text).
+    """
+    sentence_tokens = _tokens(sentence)
+    score = 0
+    for q in question_tokens:
+        for s in sentence_tokens:
+            if q == s or (len(q) >= 4 and (s.startswith(q) or q.startswith(s))):
+                score += 1
+                break
+    return score
+
+
+def _split_sentences(text: str) -> list:
+    """Split text into clean sentences, dropping markdown headings/labels."""
+    raw = re.split(r"(?<=[.!?;])\s+|\n+", text)
+    sentences = []
+    for s in raw:
+        s = s.strip().strip("#*-—").strip()
+        # Skip empties, markdown headings, title lines, and short labels.
+        if not s or s.startswith("#") or "—" in s or len(s) < 15:
+            continue
+        sentences.append(s)
+    return sentences
+
+
+def build_extractive_answer(message: str, language: str, retrieved_chunks: list) -> str:
+    """Build a simple answer directly from the most relevant retrieved context.
+
+    Used as a guardrail when Gemini returns a fallback-style answer despite
+    strong retrieval evidence. It does not invent anything: it just selects the
+    most relevant sentences (in the guest's language) from the retrieved chunks.
+    The question keywords drive the selection, which naturally covers the common
+    demo questions (check-in, breakfast, airport transfer, cancellation).
+    """
+    question_tokens = set(_tokens(message))
+
+    # Collect candidate sentences in the guest's language, keeping their order.
+    candidates = []  # (score, order_index, sentence)
+    order = 0
+    for chunk in retrieved_chunks:
+        for sentence in _split_sentences(chunk["text"]):
+            if detect_language(sentence) != language:
+                continue
+            score = _relevance(question_tokens, sentence)
+            candidates.append((score, order, sentence))
+            order += 1
+
+    # Prefer sentences that share keywords with the question (best first).
+    matched = sorted(
+        (c for c in candidates if c[0] > 0), key=lambda c: (-c[0], c[1])
+    )[:4]
+
+    # If nothing matched, fall back to the first sentences of the top context.
+    chosen = matched if matched else candidates[:2]
+
+    # Present in original order and de-duplicate.
+    chosen = sorted(chosen, key=lambda c: c[1])
+    seen = set()
+    sentences = []
+    for _, _, sentence in chosen:
+        if sentence not in seen:
+            seen.add(sentence)
+            sentences.append(sentence)
+    sentences = sentences[:4]
+
+    lead = _EXTRACTIVE_LEAD_IN.get(language, _EXTRACTIVE_LEAD_IN["en"])
+    body = " ".join(sentences).strip()
+    if not body:
+        # Absolute last resort: a trimmed slice of the top chunk.
+        body = retrieved_chunks[0]["text"][:300].strip()
+    return f"{lead} {body}"
 
 
 def run_agent(message: str, requested_language: str = "auto") -> dict:
@@ -380,9 +533,19 @@ def run_agent(message: str, requested_language: str = "auto") -> dict:
         retrieved_chunks = []
 
     top_score = retrieved_chunks[0]["score"] if retrieved_chunks else 0.0
+    retrieved_sources = {chunk["source"] for chunk in retrieved_chunks}
+
+    # Cancellation/refund questions are important to answer. If the retrieval is
+    # only slightly below the normal threshold but it did pull in the right doc
+    # (cancellations_refunds.md), we still allow a grounded answer.
+    cancellation_override = (
+        intent == "cancellation_refund"
+        and "cancellations_refunds.md" in retrieved_sources
+        and top_score >= 0.30
+    )
 
     # Not enough relevant context -> graceful fallback instead of guessing.
-    if not retrieved_chunks or top_score < 0.45:
+    if not retrieved_chunks or (top_score < 0.45 and not cancellation_override):
         return _build_response(
             answer=get_template("fallback", language),
             decision="fallback",
@@ -403,6 +566,12 @@ def run_agent(message: str, requested_language: str = "auto") -> dict:
     for chunk in retrieved_chunks:
         if chunk["source"] not in sources:
             sources.append(chunk["source"])
+
+    # Guardrail: the retrieval evidence is strong (high/medium) and we have
+    # sources, so a fallback-style answer here is wrong. If Gemini returned one
+    # (or generation failed), answer directly from the retrieved context.
+    if evidence_level in ("high", "medium") and sources and is_bad_fallback_answer(answer):
+        answer = build_extractive_answer(message, language, retrieved_chunks)
 
     return _build_response(
         answer=answer,

@@ -244,7 +244,11 @@ def retrieve(query: str, top_k: int = 3) -> list:
 #   python rag.py
 
 if __name__ == "__main__":
-    results = retrieve("What time is check-in?")
-    for r in results:
-        print(r["source"], r["score"])
-        print(r["text"][:300])
+    # A couple of quick retrieval checks. The cancellation query should pull in
+    # cancellations_refunds.md as one of the top sources.
+    for query in ["What time is check-in?", "Can I cancel my booking?"]:
+        print(f"\n=== Query: {query} ===")
+        results = retrieve(query)
+        for r in results:
+            print(r["source"], r["score"])
+            print(r["text"][:300])
