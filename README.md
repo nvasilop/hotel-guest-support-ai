@@ -3,6 +3,12 @@
 A small, multilingual (Greek & English) hotel guest support AI assistant for a
 fictional hotel group called **AegeanStay Hotels**.
 
+## Live Demo
+
+Try the hosted version of StayFlow AI here:
+
+https://hotel-guest-support-ai.onrender.com 
+
 ## Project Overview
 
 StayFlow AI is a focused prototype of a guest support copilot for AegeanStay
