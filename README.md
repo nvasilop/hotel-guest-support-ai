@@ -11,7 +11,7 @@ https://hotel-guest-support-ai.onrender.com
 
 ## Project Overview
 
-StayFlow AI is a focused prototype of a guest support copilot for AegeanStay
+StayFlow AI is a focused prototype of a guest support assistant for AegeanStay
 Hotels, a fictional group of seaside hotels in Greece. Guests can ask questions
 in Greek or English about their stay, and the assistant answers using a small
 hotel knowledge base, makes sensible agent-flow decisions, and hands off to the
