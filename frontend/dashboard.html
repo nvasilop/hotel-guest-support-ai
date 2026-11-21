@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StayFlow AI — KPI Dashboard</title>
+    <!-- Chart.js from a CDN, so nothing needs to be installed. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+      /* Same colors and fonts as the chat page (index.html). */
+      :root {
+        --bg: #0f1b2d;
+        --bg-2: #13243a;
+        --card: #ffffff;
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --accent: #0e7490;
+        --accent-soft: #e0f2fe;
+        --border: #e5e7eb;
+        --warn: #b45309;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(160deg, var(--bg), var(--bg-2));
+        color: var(--ink);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+      .app {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .back {
+        color: #bae6fd;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .back:hover {
+        text-decoration: underline;
+      }
+      header {
+        color: #fff;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1.9rem;
+        letter-spacing: 0.3px;
+      }
+      header .demo {
+        display: inline-block;
+        margin: 10px 0 0;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        color: #fde68a;
+        border: 1px solid #fde68a;
+        border-radius: 999px;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 1.05rem;
+      }
+      /* KPI boxes: as many per row as fit, at least 160px wide each. */
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+      }
+      .kpi {
+        background: var(--card);
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        padding: 14px 16px;
+      }
+      .kpi .label {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .kpi .value {
+        margin: 4px 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .kpi .hint {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+      /* The two charts sit side by side on wide screens, stacked on phones. */
+      .charts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .chart-box {
+        position: relative;
+        height: 300px;
+      }
+      .gaps p {
+        margin: 0 0 10px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .gaps ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .gaps li {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.92rem;
+      }
+      .gaps li:last-child {
+        border-bottom: none;
+      }
+      .gaps li b {
+        color: var(--warn);
+      }
+      .error {
+        color: #fecaca;
+        text-align: center;
+      }
+      @media (max-width: 480px) {
+        header h1 {
+          font-size: 1.5rem;
+        }
+        .chart-box {
+          height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <a class="back" href="/">← Back to chat</a>
+
+      <header>
+        <h1>StayFlow AI — KPI Dashboard</h1>
+        <p class="demo">Demo data: 1,000 simulated conversations. Not real guests.</p>
+      </header>
+
+      <!-- Error message, shown only if /metrics cannot be loaded. -->
+      <p class="error" id="error" hidden></p>
+
+      <!-- The 5 KPI boxes are filled in by the script below. -->
+      <section class="kpis" id="kpis"></section>
+
+      <section class="charts">
+        <div class="card">
+          <h2>Most common guest questions</h2>
+          <div class="chart-box"><canvas id="intentsChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Average rating per decision (1–5)</h2>
+          <div class="chart-box"><canvas id="ratingChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="card gaps">
+        <h2>Knowledge base gaps</h2>
+        <p id="gapsSummary"></p>
+        <ul id="gapsList"></ul>
+      </section>
+    </div>
+
+    <script>
+      // Turn an intent id like "check_in_checkout" into "check in checkout".
+      function niceName(id) {
+        return id.replace(/_/g, " ");
+      }
+
+      // Build one KPI box (label, big number, short explanation).
+      function kpiBox(label, value, hint) {
+        return `
+          <div class="kpi">
+            <div class="label">${label}</div>
+            <div class="value">${value}</div>
+            <div class="hint">${hint}</div>
+          </div>`;
+      }
+
+      // Fill the 5 KPI boxes. The hints match the table in the README.
+      function showKpis(m) {
+        const r = m.rates;
+        document.getElementById("kpis").innerHTML =
+          kpiBox("Automation rate", r.automation + "%",
+            "How often the bot answered the question by itself.") +
+          kpiBox("Escalation rate", r.escalation + "%",
+            "How often the bot passed the chat to a real person at the hotel.") +
+          kpiBox("Fallback rate", r.fallback + "%",
+            "How often the bot said it couldn't help, because it had no info or the question was not about the hotel.") +
+          kpiBox("Clarification rate", r.clarification + "%",
+            "How often the bot asked the guest a follow-up question first.") +
+          kpiBox("CSAT", m.csat.toFixed(2) + " / 5",
+            "The average guest rating, from 1 (bad) to 5 (great).");
+      }
+
+      // Horizontal bar chart: share of each intent (most common first).
+      function showIntentsChart(m) {
+        const names = Object.keys(m.intents);
+        new Chart(document.getElementById("intentsChart"), {
+          type: "bar",
+          data: {
+            labels: names.map(niceName),
+            datasets: [{
+              label: "% of conversations",
+              data: names.map((name) => m.intents[name].percent),
+              backgroundColor: "#0e7490",
+              borderRadius: 4,
+            }],
+          },
+          options: {
+            indexAxis: "y", // bars go left to right
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { ticks: { callback: (v) => v + "%" } } },
+          },
+        });
+      }
+
+      // Bar chart: average rating for each decision, on a 1-5 scale.
+      function showRatingChart(m) {
+        const decisions = Object.keys(m.rating_per_decision);
+        new Chart(document.getElementById("ratingChart"), {
+          type: "bar",
+          data: {
+            labels: decisions,
+            datasets: [{
+              label: "Average rating",
+              data: decisions.map((d) => m.rating_per_decision[d].average),
+              // Green for answer, amber for the rest.
+              backgroundColor: decisions.map((d) => (d === "answer" ? "#15803d" : "#d97706")),
+              borderRadius: 4,
+            }],
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { min: 0, max: 5 } },
+          },
+        });
+      }
+
+      // Knowledge base gaps: fallbacks on real hotel topics, per intent.
+      function showGaps(m) {
+        const gaps = m.kb_gaps;
+        document.getElementById("gapsSummary").textContent =
+          `${gaps.in_scope_fallbacks} of ${gaps.total_fallbacks} fallbacks were real hotel ` +
+          `questions the bot could not answer. These show where the knowledge base needs more info.`;
+        document.getElementById("gapsList").innerHTML = Object.entries(gaps.per_intent)
+          .map(([intent, count]) => `<li><span>${niceName(intent)}</span><b>${count}</b></li>`)
+          .join("");
+      }
+
+      // Load the numbers from the backend and draw everything.
+      async function loadDashboard() {
+        try {
+          const response = await fetch("/metrics");
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          const metrics = await response.json();
+          showKpis(metrics);
+          showIntentsChart(metrics);
+          showRatingChart(metrics);
+          showGaps(metrics);
+        } catch (err) {
+          const box = document.getElementById("error");
+          box.textContent = "Could not load the metrics (" + err.message + ").";
+          box.hidden = false;
+        }
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>

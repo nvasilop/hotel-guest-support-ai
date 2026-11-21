@@ -125,13 +125,16 @@ See `eval/evaluation_report.md` for a fuller write-up.
 
 ## KPI Dashboard
 
+You can see the live dashboard here: https://hotel-guest-support-ai.onrender.com/dashboard
+
 ### What I did
 
 I created 1,000 fake guest chats and saved them in `data/sample_chat_logs.csv`.
 The script `data/generate_sample_logs.py` makes this file, and the script
 `data/compute_kpis.py` reads it and prints the KPIs. A KPI is just a number that
 tells you if something is working well. I did this to show how a hotel could
-check if the bot really helps the front desk.
+check if the bot really helps the front desk. The server works out the KPIs at
+`/metrics`, and the page at `/dashboard` shows them.
 
 ### Real numbers (from my test set)
 
