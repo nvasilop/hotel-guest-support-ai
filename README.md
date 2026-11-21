@@ -123,6 +123,68 @@ quality such as answer fluency, factual completeness, or robustness at scale.
 
 See `eval/evaluation_report.md` for a fuller write-up.
 
+## KPI Dashboard
+
+### What I did
+
+I created 1,000 fake guest chats and saved them in `data/sample_chat_logs.csv`.
+The script `data/generate_sample_logs.py` makes this file, and the script
+`data/compute_kpis.py` reads it and prints the KPIs. A KPI is just a number that
+tells you if something is working well. I did this to show how a hotel could
+check if the bot really helps the front desk.
+
+### Real numbers (from my test set)
+
+- **Intent accuracy: 22/22.** The bot found the right topic of the question every time.
+- **Correct decision: 22/22.** The bot picked the right next step every time
+  (answer, ask a follow-up question, say it can't help, or pass the chat to staff).
+
+This is a small test set that I wrote myself. It shows the logic works on these
+cases. It does not prove the bot is perfect.
+
+### Simulated numbers
+
+These come from running `compute_kpis.py` on the 1,000 fake chats.
+
+| KPI | What it means | Result |
+| --- | --- | --- |
+| Automation rate | How often the bot answered the question by itself. | 67.5% |
+| Escalation rate | How often the bot passed the chat to a real person at the hotel. | 7.5% |
+| Fallback rate | How often the bot said it couldn't help, because it had no info or the question was not about the hotel. | 12.6% |
+| Clarification rate | How often the bot asked the guest a follow-up question first. | 12.4% |
+| CSAT | The average guest rating, from 1 (bad) to 5 (great). CSAT means "customer satisfaction". | 3.75 / 5 |
+
+### Most common guest questions
+
+1. Booking: 18.3%
+2. Check-in / check-out: 15.5%
+3. Amenities (breakfast, pool, parking and so on): 15.2%
+4. Room problems: 9.9%
+5. Cancellations and refunds: 9.7%
+
+### What I learned from the numbers
+
+- **Guests are happier when the bot answers.** The average rating was 4.25 when
+  the bot answered, but only 2.60 after a fallback and 2.56 after a clarification.
+  → I would add more info to the knowledge base, so the bot can answer more often.
+- **Many fallbacks are real hotel questions.** 69 of the 126 fallbacks were about
+  normal hotel topics, not off-topic questions. That means the knowledge base has gaps.
+  → I would fill the gaps for check-in/check-out (14), amenities (13) and booking (13) first.
+- **Most room problems need a question first.** 85 of the 99 room problems got a
+  clarification. Only the 14 urgent ones went straight to staff.
+  → I would add quick buttons (AC, Wi-Fi, cleaning, noise), so the guest can pick the problem in one tap.
+
+### How to run it yourself
+
+```bash
+python data/generate_sample_logs.py   # creates the CSV (same result every time)
+python data/compute_kpis.py           # prints the KPIs
+```
+
+### Note
+
+The simulated numbers come from fake data I made for this demo, not from real guests.
+
 ## How to Run Locally
 
 ```bash
