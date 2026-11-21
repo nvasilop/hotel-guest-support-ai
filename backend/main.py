@@ -10,6 +10,8 @@ The chat API is wired to the agent flow (agent.py), which uses the RAG layer
 (rag.py) and Gemini to produce grounded answers.
 - GET  /         -> serves the simple chat UI (frontend/index.html).
 - GET  /dashboard -> serves the KPI dashboard page (frontend/dashboard.html).
+- GET  /hotel    -> serves the demo hotel group website (frontend/hotel.html).
+- GET  /properties -> serves the list of all hotels (frontend/properties.html).
 - GET  /health   -> health check for hosting (Render).
 - POST /chat     -> passes the guest message to run_agent() and returns its
                     structured decision (answer | clarify | fallback | escalate).
@@ -35,6 +37,10 @@ _FRONTEND_INDEX = os.path.join(_PROJECT_ROOT, "frontend", "index.html")
 
 # Path to the KPI dashboard page (also in frontend/).
 _FRONTEND_DASHBOARD = os.path.join(_PROJECT_ROOT, "frontend", "dashboard.html")
+
+# Paths to the demo hotel website pages (also in frontend/).
+_FRONTEND_HOTEL = os.path.join(_PROJECT_ROOT, "frontend", "hotel.html")
+_FRONTEND_PROPERTIES = os.path.join(_PROJECT_ROOT, "frontend", "properties.html")
 
 # The KPI calculation lives in data/compute_kpis.py, so the script and the
 # /metrics endpoint share the same code. Add data/ to the import path to use it.
@@ -97,6 +103,22 @@ def dashboard():
     if os.path.isfile(_FRONTEND_DASHBOARD):
         return FileResponse(_FRONTEND_DASHBOARD)
     return JSONResponse({"error": "Dashboard file not found."}, status_code=404)
+
+
+@app.get("/hotel")
+def hotel():
+    # Serve the demo website of the fictional AegeanStay Hotels group.
+    if os.path.isfile(_FRONTEND_HOTEL):
+        return FileResponse(_FRONTEND_HOTEL)
+    return JSONResponse({"error": "Hotel page not found."}, status_code=404)
+
+
+@app.get("/properties")
+def properties():
+    # Serve the page that lists all hotels of the group.
+    if os.path.isfile(_FRONTEND_PROPERTIES):
+        return FileResponse(_FRONTEND_PROPERTIES)
+    return JSONResponse({"error": "Properties page not found."}, status_code=404)
 
 
 @app.get("/health")

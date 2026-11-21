@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Properties — AegeanStay Hotels</title>
+    <!-- Same fonts as hotel.html -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Same colors as hotel.html: warm white, charcoal and sage green. */
+      :root {
+        --warm-white: #faf7f2;
+        --sand: #f1ece3;
+        --charcoal: #2f302d;
+        --muted: #6d6e68;
+        --sage: #8a9a7b;
+        --sage-dark: #5f6f55;
+        --sage-soft: #e6ebe0;
+        --line: #e3ddd2;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: var(--warm-white);
+        color: var(--charcoal);
+        line-height: 1.6;
+      }
+      a {
+        color: inherit;
+      }
+      h1,
+      h2 {
+        font-family: var(--serif);
+        font-weight: 500;
+        line-height: 1.15;
+        margin: 0 0 10px;
+      }
+      h1 {
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
+      }
+      h2 {
+        font-size: 1.7rem;
+      }
+      p {
+        margin: 0 0 10px;
+      }
+      .container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .eyebrow {
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .lead {
+        color: var(--muted);
+        max-width: 640px;
+      }
+
+      /* Demo banner */
+      .demo-banner {
+        background: var(--charcoal);
+        color: var(--warm-white);
+        text-align: center;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        letter-spacing: 0.04em;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+      }
+      .btn-primary {
+        background: var(--sage-dark);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--charcoal);
+      }
+      .btn-outline {
+        border-color: var(--charcoal);
+      }
+      .btn-outline:hover {
+        background: var(--charcoal);
+        color: var(--warm-white);
+      }
+
+      /* Header */
+      header {
+        border-bottom: 1px solid var(--line);
+        background: var(--warm-white);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+        gap: 12px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .logo-text {
+        font-family: var(--serif);
+        font-size: 1.45rem;
+        font-weight: 600;
+      }
+      .logo-text small {
+        display: block;
+        font-family: var(--sans);
+        font-size: 0.6rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 600;
+        margin-top: -2px;
+      }
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* Page intro */
+      .intro {
+        padding: 64px 0 24px;
+      }
+      .back {
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+      .back:hover {
+        color: var(--charcoal);
+      }
+
+      /* Region headings ("Islands", "Mainland coast") */
+      .region {
+        padding: 32px 0 8px;
+      }
+      .region-title {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .region-title span {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      /* One wide row per property: drawing on the left, details on the right */
+      .property {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 18px;
+      }
+      .property-art {
+        background: var(--sage-soft);
+        min-height: 170px;
+      }
+      .property-art svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .property-body {
+        padding: 22px 26px;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--sage-dark);
+        background: var(--sage-soft);
+        border-radius: 999px;
+        padding: 3px 10px;
+        margin-bottom: 10px;
+      }
+      .tag.flagship {
+        background: var(--charcoal);
+        color: var(--warm-white);
+      }
+      .location {
+        font-size: 0.85rem;
+        color: var(--sage-dark);
+        margin-bottom: 8px;
+      }
+      .property-body p {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .amenities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0 8px;
+      }
+      .amenity {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.75rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px 3px 6px;
+      }
+      .amenity svg {
+        width: 16px;
+        height: 16px;
+      }
+      /* Small practical notes (parking, minimum stay) taken from kb/. */
+      .notes {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin: 0;
+      }
+
+      /* Shared policies box */
+      .policies {
+        margin: 40px 0 72px;
+        background: var(--sand);
+        border-radius: 18px;
+        padding: 28px;
+      }
+      .policies ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .policies li {
+        margin-bottom: 6px;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--charcoal);
+        color: #cfd0c9;
+        padding: 40px 0;
+        font-size: 0.85rem;
+      }
+      .footer-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      footer .disclaimer {
+        color: var(--warm-white);
+        font-weight: 500;
+      }
+      .kpi-link {
+        font-size: 0.8rem;
+        color: #cfd0c9;
+        text-decoration: none;
+        border-bottom: 1px dotted #cfd0c9;
+      }
+      .kpi-link:hover {
+        color: #fff;
+      }
+
+      /* Mobile */
+      @media (max-width: 700px) {
+        .property {
+          grid-template-columns: 1fr;
+        }
+        .property-art {
+          min-height: 130px;
+          height: 130px;
+        }
+        .nav-actions .btn-outline {
+          display: none;
+        }
+      }
+      @media (max-width: 420px) {
+        .nav-actions .btn {
+          padding: 8px 12px;
+          font-size: 0.78rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Icon library (same drawings as hotel.html). -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-sea" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round">
+          <path d="M2 9c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+          <path d="M2 14c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+          <path d="M2 19c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+        </symbol>
+        <symbol id="i-breakfast" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" />
+          <path d="M17 12h1.5a2.5 2.5 0 0 1 0 5H17" />
+          <path d="M8 3c-1 1 1 2 0 4M12 3c-1 1 1 2 0 4" />
+        </symbol>
+        <symbol id="i-pool" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 16V5a2 2 0 0 1 4 0" />
+          <path d="M15 16V5a2 2 0 0 1 4 0" />
+          <path d="M8 8h7M8 12h7" />
+          <path d="M2 19c2-1.5 3.5-1.5 5 0s3.5 1.5 5 0 3.5-1.5 5 0 3.5 1.5 5 0" />
+        </symbol>
+        <symbol id="i-spa" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20c-4 0-8-3-9-8 3 0 6 1 9 4 3-3 6-4 9-4-1 5-5 8-9 8z" />
+          <path d="M12 16c-2-2-2.5-6 0-11 2.5 5 2 9 0 11z" />
+        </symbol>
+        <symbol id="i-parking" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <path d="M10 17V7h3a3 3 0 0 1 0 6h-3" />
+        </symbol>
+        <!-- Reusable small landscape drawing used on every card. -->
+        <symbol id="scene" viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice">
+          <rect width="300" height="170" fill="#e6ebe0" />
+          <circle cx="220" cy="52" r="22" fill="#faf7f2" />
+          <path d="M0 105c60-30 110-35 170-10s90 10 130-10v85H0z" fill="#c9d3be" />
+          <path d="M0 118h300v52H0z" fill="#8a9a7b" />
+          <path d="M30 140c10-6 18-6 26 0s18 6 26 0M180 148c10-6 18-6 26 0s18 6 26 0" fill="none" stroke="#faf7f2" stroke-width="2" stroke-linecap="round" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="demo-banner">Demo website for a fictional hotel group · Not a real business</div>
+
+    <header>
+      <div class="container nav">
+        <!-- Same simple logo as hotel.html -->
+        <a class="logo" href="/hotel" aria-label="AegeanStay Hotels home">
+          <svg width="42" height="42" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" fill="none" stroke="#5f6f55" stroke-width="1.6" />
+            <circle cx="24" cy="20" r="7" fill="#8a9a7b" />
+            <path d="M8 28c3-2.5 5.5-2.5 8 0s5 2.5 8 0 5.5-2.5 8 0 5 2.5 8 0" fill="none" stroke="#2f302d" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M11 34c2.5-2 4.5-2 6.5 0s4.5 2 6.5 0 4.5-2 6.5 0 4 2 6.5 0" fill="none" stroke="#2f302d" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <span class="logo-text">AegeanStay<small>Hotels</small></span>
+        </a>
+        <div class="nav-actions">
+          <a class="btn btn-outline" href="/hotel">Home</a>
+          <a class="btn btn-primary" href="/">💬 Chat with our assistant</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="intro">
+        <a class="back" href="/hotel">← Back to home</a>
+        <div class="eyebrow">All properties</div>
+        <h1>Our hotels</h1>
+        <p class="lead">
+          Six boutique seaside hotels across the Greek islands and the mainland coast. Every one is
+          small, quiet and close to the water.
+        </p>
+      </div>
+
+      <!-- ===== Islands ===== -->
+      <section class="region">
+        <div class="region-title"><h2>Islands</h2><span>4 hotels</span></div>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag flagship">Flagship</span>
+            <h2>AegeanStay Kythnos</h2>
+            <div class="location">Kythnos, Cyclades</div>
+            <p>Our first and main hotel: whitewashed rooms above a quiet bay, made for slow days and early nights.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+              <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+            </div>
+            <p class="notes">Limited parking on request · Minimum stay 3 nights in July–August</p>
+          </div>
+        </article>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag">Island</span>
+            <h2>AegeanStay Naxos</h2>
+            <div class="location">Naxos, Cyclades</div>
+            <p>Sandy beaches, long sunsets and simple, light-filled rooms close to the old town.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+            </div>
+            <p class="notes">Limited parking on request · Minimum stay 3 nights in July–August</p>
+          </div>
+        </article>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag">Island</span>
+            <h2>AegeanStay Chania</h2>
+            <div class="location">Chania, Crete</div>
+            <p>A calm retreat near the old Venetian harbour, with a garden pool and a small spa.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+              <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+            </div>
+            <p class="notes">Limited parking on request · Minimum stay 3 nights in July–August</p>
+          </div>
+        </article>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag">Island</span>
+            <h2>AegeanStay Paros</h2>
+            <div class="location">Paros, Cyclades</div>
+            <p>A small whitewashed hotel by a quiet fishing harbour, with sea-view terraces.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+            </div>
+            <p class="notes">Limited parking on request · Minimum stay 3 nights in July–August</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- ===== Mainland coast ===== -->
+      <section class="region">
+        <div class="region-title"><h2>Mainland coast</h2><span>2 hotels</span></div>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag">Mainland coast</span>
+            <h2>AegeanStay Pelion</h2>
+            <div class="location">Pelion coast, Magnesia</div>
+            <p>Where green mountains meet the sea. Easy to reach by car, with forest walks nearby.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+              <span class="amenity"><svg><use href="#i-parking" /></svg>Free parking</span>
+            </div>
+            <p class="notes">Free on-site parking</p>
+          </div>
+        </article>
+
+        <article class="property">
+          <div class="property-art"><svg><use href="#scene" /></svg></div>
+          <div class="property-body">
+            <span class="tag">Mainland coast</span>
+            <h2>AegeanStay Nafplio</h2>
+            <div class="location">Nafplio, Peloponnese</div>
+            <p>A peaceful seafront hotel a short walk from the old town's quiet streets.</p>
+            <div class="amenities">
+              <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+              <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+              <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+              <span class="amenity"><svg><use href="#i-parking" /></svg>Free parking</span>
+            </div>
+            <p class="notes">Free on-site parking</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- Policies that apply to every hotel (from kb/). -->
+      <div class="policies">
+        <h2>Good to know at every hotel</h2>
+        <ul>
+          <li>Check-in from 15:00 · Check-out until 11:00 (late check-out until 14:00 for an extra fee, if available)</li>
+          <li>Buffet breakfast daily 07:30–10:30, included in most rates. Please check your booking</li>
+          <li>Outdoor pools open 09:00–19:00 · Free Wi-Fi in all rooms and public areas</li>
+          <li>20% deposit to confirm · Free cancellation up to 7 days before check-in</li>
+          <li>Front desk open 24/7 · Support in Greek and English</li>
+        </ul>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <div>
+          <div class="disclaimer">Demo website for a fictional hotel group.</div>
+          <div>AegeanStay Hotels is not a real company.</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+          <a class="kpi-link" href="/hotel">Home</a>
+          <a class="kpi-link" href="/dashboard">📊 KPI Dashboard</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

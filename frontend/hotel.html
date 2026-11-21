@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AegeanStay Hotels — Boutique Seaside Hotels</title>
+    <!-- Two Google Fonts: an elegant serif for headings, a clean sans for text. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ---------- Colors: warm white, charcoal and sage green ---------- */
+      :root {
+        --warm-white: #faf7f2;
+        --sand: #f1ece3;
+        --charcoal: #2f302d;
+        --muted: #6d6e68;
+        --sage: #8a9a7b;
+        --sage-dark: #5f6f55;
+        --sage-soft: #e6ebe0;
+        --line: #e3ddd2;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      /* ---------- Basic page setup ---------- */
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        background: var(--warm-white);
+        color: var(--charcoal);
+        line-height: 1.6;
+      }
+      a {
+        color: inherit;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--serif);
+        font-weight: 500;
+        line-height: 1.15;
+        margin: 0 0 12px;
+      }
+      h2 {
+        font-size: clamp(2rem, 4vw, 2.6rem);
+      }
+      h3 {
+        font-size: 1.5rem;
+      }
+      p {
+        margin: 0 0 12px;
+      }
+      .container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      section {
+        padding: 88px 0;
+      }
+      /* Small uppercase label above section titles. */
+      .eyebrow {
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .lead {
+        color: var(--muted);
+        max-width: 620px;
+      }
+      /* Small grey "this is sample data" note. */
+      .sample-note {
+        display: inline-block;
+        font-size: 0.75rem;
+        color: var(--muted);
+        background: var(--sand);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 12px;
+        margin-top: 4px;
+      }
+
+      /* ---------- Demo banner at the very top ---------- */
+      .demo-banner {
+        background: var(--charcoal);
+        color: var(--warm-white);
+        text-align: center;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        letter-spacing: 0.04em;
+      }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 26px;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: background 0.2s, color 0.2s, transform 0.2s;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn-primary {
+        background: var(--sage-dark);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--charcoal);
+      }
+      .btn-outline {
+        border-color: var(--charcoal);
+        color: var(--charcoal);
+      }
+      .btn-outline:hover {
+        background: var(--charcoal);
+        color: var(--warm-white);
+      }
+
+      /* ---------- Header / navigation ---------- */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(250, 247, 242, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+        gap: 16px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .logo-text {
+        font-family: var(--serif);
+        font-size: 1.45rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .logo-text small {
+        display: block;
+        font-family: var(--sans);
+        font-size: 0.6rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 600;
+        margin-top: -2px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 26px;
+        font-size: 0.9rem;
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: var(--muted);
+      }
+      .nav-links a:hover {
+        color: var(--charcoal);
+      }
+      .nav .btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+      }
+
+      /* ---------- Welcome (hero) section ---------- */
+      .hero {
+        padding: 80px 0 64px;
+        background: linear-gradient(180deg, var(--warm-white) 0%, var(--sand) 100%);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 48px;
+        align-items: center;
+      }
+      .hero h1 {
+        font-size: clamp(2.6rem, 6vw, 4.2rem);
+        margin-bottom: 20px;
+      }
+      .hero h1 em {
+        color: var(--sage-dark);
+        font-style: italic;
+      }
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .hero-art svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* ---------- Generic card grid ---------- */
+      .grid {
+        display: grid;
+        gap: 24px;
+        margin-top: 40px;
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 28px;
+      }
+
+      /* ---------- Featured properties ---------- */
+      .property {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+      }
+      /* The drawn "picture" at the top of each property card. */
+      .property-art {
+        height: 150px;
+        background: var(--sage-soft);
+      }
+      .property-art svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .property-body {
+        padding: 22px 22px 24px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .tag {
+        align-self: flex-start;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--sage-dark);
+        background: var(--sage-soft);
+        border-radius: 999px;
+        padding: 3px 10px;
+        margin-bottom: 12px;
+      }
+      .tag.flagship {
+        background: var(--charcoal);
+        color: var(--warm-white);
+      }
+      .property-body p {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .location {
+        font-size: 0.85rem;
+        color: var(--sage-dark);
+        margin-bottom: 10px;
+      }
+      /* Row of small amenity icons on each card. */
+      .amenities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 12px;
+      }
+      .amenity {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.75rem;
+        color: var(--charcoal);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px 3px 6px;
+      }
+      .amenity svg {
+        width: 16px;
+        height: 16px;
+      }
+      .center {
+        text-align: center;
+      }
+      .view-all {
+        margin-top: 40px;
+      }
+
+      /* ---------- Services ---------- */
+      .services {
+        background: #fff;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .service .icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--sage-soft);
+        display: grid;
+        place-items: center;
+        margin-bottom: 18px;
+      }
+      .service .icon svg {
+        width: 28px;
+        height: 28px;
+      }
+      .service p {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .service .detail {
+        font-size: 0.82rem;
+        color: var(--sage-dark);
+        font-weight: 500;
+      }
+      .service.card {
+        background: var(--warm-white);
+      }
+      /* "Good to know" strip with check-in / check-out / cancellation. */
+      .good-to-know {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .good-to-know div {
+        padding: 22px;
+        border-right: 1px solid var(--line);
+      }
+      .good-to-know div:last-child {
+        border-right: none;
+      }
+      .good-to-know strong {
+        display: block;
+        font-family: var(--serif);
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      .good-to-know span {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+
+      /* ---------- About us ---------- */
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .numbers {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .number {
+        background: var(--sage-soft);
+        border-radius: 18px;
+        padding: 24px;
+      }
+      .number strong {
+        display: block;
+        font-family: var(--serif);
+        font-size: 2.6rem;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--sage-dark);
+      }
+      .number span {
+        font-size: 0.85rem;
+        color: var(--charcoal);
+      }
+
+      /* ---------- Reviews ---------- */
+      .reviews {
+        background: var(--sand);
+      }
+      .review .stars {
+        color: var(--sage-dark);
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+      }
+      .review blockquote {
+        margin: 0 0 16px;
+        font-family: var(--serif);
+        font-size: 1.25rem;
+        line-height: 1.4;
+      }
+      .review cite {
+        font-style: normal;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      /* ---------- Contact ---------- */
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: start;
+      }
+      .contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .contact-list li {
+        display: flex;
+        gap: 14px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .contact-list li:first-child {
+        border-top: 1px solid var(--line);
+      }
+      .contact-list svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .contact-list strong {
+        display: block;
+        font-weight: 600;
+      }
+      .contact-list span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .chat-card {
+        background: var(--charcoal);
+        color: var(--warm-white);
+        border: none;
+      }
+      .chat-card p {
+        color: #cfd0c9;
+      }
+      .chat-card .btn-primary {
+        background: var(--sage);
+        color: var(--charcoal);
+        margin-top: 12px;
+      }
+      .chat-card .btn-primary:hover {
+        background: var(--warm-white);
+      }
+
+      /* ---------- Footer ---------- */
+      footer {
+        background: var(--charcoal);
+        color: #cfd0c9;
+        padding: 40px 0;
+        font-size: 0.85rem;
+      }
+      .footer-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      footer .disclaimer {
+        color: var(--warm-white);
+        font-weight: 500;
+      }
+      .kpi-link {
+        font-size: 0.8rem;
+        color: #cfd0c9;
+        text-decoration: none;
+        border-bottom: 1px dotted #cfd0c9;
+      }
+      .kpi-link:hover {
+        color: #fff;
+      }
+
+      /* ---------- Floating chat button (always visible) ---------- */
+      .chat-float {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 20;
+        box-shadow: 0 10px 30px rgba(47, 48, 45, 0.25);
+      }
+
+      /* ---------- Mobile layout ---------- */
+      @media (max-width: 900px) {
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-3,
+        .hero-grid,
+        .about-grid,
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+        .good-to-know {
+          grid-template-columns: 1fr 1fr;
+        }
+        .good-to-know div:nth-child(2) {
+          border-right: none;
+        }
+        .good-to-know div:nth-child(-n + 2) {
+          border-bottom: 1px solid var(--line);
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+      @media (max-width: 560px) {
+        section {
+          padding: 64px 0;
+        }
+        .grid-4 {
+          grid-template-columns: 1fr;
+        }
+        .nav .btn {
+          display: none; /* the floating chat button is shown instead */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Icon library: each <symbol> is a simple line drawing.
+      We draw it anywhere with <svg><use href="#icon-name" /></svg>.
+    -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <!-- Sea: three waves -->
+        <symbol id="i-sea" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round">
+          <path d="M2 9c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+          <path d="M2 14c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+          <path d="M2 19c2-2 4-2 5 0s3 2 5 0 4-2 5 0 3 2 5 0" />
+        </symbol>
+        <!-- Room: a bed -->
+        <symbol id="i-room" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 18V6" />
+          <path d="M3 14h18v4" />
+          <path d="M21 14v-2a3 3 0 0 0-3-3h-7v5" />
+          <circle cx="7" cy="11" r="2" />
+        </symbol>
+        <!-- Breakfast: a coffee cup with steam -->
+        <symbol id="i-breakfast" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" />
+          <path d="M17 12h1.5a2.5 2.5 0 0 1 0 5H17" />
+          <path d="M8 3c-1 1 1 2 0 4M12 3c-1 1 1 2 0 4" />
+        </symbol>
+        <!-- Pool: ladder and water -->
+        <symbol id="i-pool" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 16V5a2 2 0 0 1 4 0" />
+          <path d="M15 16V5a2 2 0 0 1 4 0" />
+          <path d="M8 8h7M8 12h7" />
+          <path d="M2 19c2-1.5 3.5-1.5 5 0s3.5 1.5 5 0 3.5-1.5 5 0 3.5 1.5 5 0" />
+        </symbol>
+        <!-- Spa: a lotus flower -->
+        <symbol id="i-spa" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20c-4 0-8-3-9-8 3 0 6 1 9 4 3-3 6-4 9-4-1 5-5 8-9 8z" />
+          <path d="M12 16c-2-2-2.5-6 0-11 2.5 5 2 9 0 11z" />
+        </symbol>
+        <!-- Wi-Fi -->
+        <symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round">
+          <path d="M2 9a15 15 0 0 1 20 0" />
+          <path d="M5.5 12.5a10 10 0 0 1 13 0" />
+          <path d="M9 16a5 5 0 0 1 6 0" />
+          <circle cx="12" cy="19.5" r="0.8" fill="#5f6f55" />
+        </symbol>
+        <!-- Transfer: a car -->
+        <symbol id="i-transfer" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 16v-3l2-5h14l2 5v3z" />
+          <path d="M3 13h18" />
+          <circle cx="7" cy="17" r="1.6" />
+          <circle cx="17" cy="17" r="1.6" />
+        </symbol>
+        <!-- Parking: letter P in a rounded square -->
+        <symbol id="i-parking" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <path d="M10 17V7h3a3 3 0 0 1 0 6h-3" />
+        </symbol>
+        <!-- Mail -->
+        <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m3 7 9 6 9-6" />
+        </symbol>
+        <!-- Phone -->
+        <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z" />
+        </symbol>
+        <!-- Clock -->
+        <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </symbol>
+        <!-- Speech bubble (languages) -->
+        <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="#5f6f55" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5h16v11H9l-5 4z" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- Demo notice, so nobody thinks this is a real hotel. -->
+    <div class="demo-banner">Demo website for a fictional hotel group · Not a real business</div>
+
+    <!-- ===== Header with logo and navigation ===== -->
+    <header>
+      <div class="container nav">
+        <!-- Simple logo: a sun over waves inside a circle, plus the name. -->
+        <a class="logo" href="/hotel" aria-label="AegeanStay Hotels home">
+          <svg width="42" height="42" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" fill="none" stroke="#5f6f55" stroke-width="1.6" />
+            <circle cx="24" cy="20" r="7" fill="#8a9a7b" />
+            <path d="M8 28c3-2.5 5.5-2.5 8 0s5 2.5 8 0 5.5-2.5 8 0 5 2.5 8 0" fill="none" stroke="#2f302d" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M11 34c2.5-2 4.5-2 6.5 0s4.5 2 6.5 0 4.5-2 6.5 0 4 2 6.5 0" fill="none" stroke="#2f302d" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <span class="logo-text">AegeanStay<small>Hotels</small></span>
+        </a>
+        <nav class="nav-links">
+          <a href="#properties">Properties</a>
+          <a href="#services">Services</a>
+          <a href="#about">About</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="btn btn-primary" href="/">💬 Chat with our assistant</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===== 1. Welcome section ===== -->
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="eyebrow">Boutique seaside hotels · Greece</div>
+            <h1>Slow mornings,<br /><em>quiet seas.</em></h1>
+            <p class="lead">
+              AegeanStay Hotels is a small group of boutique seaside hotels across the Greek
+              islands and the mainland coast. Our home is on Kythnos, where calm water and
+              unhurried days set the pace.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="/">💬 Chat with our assistant</a>
+              <a class="btn btn-outline" href="#properties">Explore our hotels</a>
+            </div>
+          </div>
+
+          <!-- Hero drawing: sun, hills, a small hotel and the sea. -->
+          <div class="hero-art" aria-hidden="true">
+            <svg viewBox="0 0 480 360">
+              <rect width="480" height="360" rx="28" fill="#e6ebe0" />
+              <circle cx="340" cy="110" r="46" fill="#faf7f2" />
+              <path d="M0 210c80-50 150-60 230-30s150 20 250-20v200H0z" fill="#c9d3be" />
+              <!-- Small white hotel with flat roofs -->
+              <rect x="120" y="150" width="70" height="56" fill="#faf7f2" />
+              <rect x="190" y="168" width="50" height="38" fill="#faf7f2" />
+              <rect x="134" y="166" width="14" height="18" rx="7" fill="#8a9a7b" />
+              <rect x="162" y="166" width="14" height="18" rx="7" fill="#8a9a7b" />
+              <rect x="206" y="180" width="18" height="26" fill="#5f6f55" />
+              <!-- Sea and waves -->
+              <path d="M0 240h480v120H0z" fill="#8a9a7b" />
+              <g fill="none" stroke="#faf7f2" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+                <path d="M40 270c15-10 28-10 42 0s28 10 42 0" />
+                <path d="M210 290c15-10 28-10 42 0s28 10 42 0" />
+                <path d="M330 262c15-10 28-10 42 0s28 10 42 0" />
+                <path d="M90 318c15-10 28-10 42 0s28 10 42 0" />
+              </g>
+              <!-- A little sailboat -->
+              <path d="M380 300h44l-8 10h-28z" fill="#2f302d" />
+              <path d="M400 298v-40l20 40z" fill="#faf7f2" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 2. Featured properties (no search, just highlights) ===== -->
+      <section id="properties">
+        <div class="container">
+          <div class="eyebrow">Featured properties</div>
+          <h2>Where to find us</h2>
+          <p class="lead">Each hotel is small, close to the water and made for rest.</p>
+
+          <div class="grid grid-4">
+            <!-- Kythnos: the flagship, always first -->
+            <article class="card property">
+              <div class="property-art" aria-hidden="true">
+                <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+                  <rect width="300" height="150" fill="#e6ebe0" />
+                  <circle cx="230" cy="48" r="22" fill="#faf7f2" />
+                  <path d="M0 95c60-30 110-35 170-10s90 10 130-10v75H0z" fill="#c9d3be" />
+                  <rect x="70" y="70" width="40" height="30" fill="#faf7f2" />
+                  <rect x="110" y="80" width="28" height="20" fill="#faf7f2" />
+                  <path d="M0 105h300v45H0z" fill="#8a9a7b" />
+                  <path d="M30 125c10-6 18-6 26 0s18 6 26 0M180 132c10-6 18-6 26 0s18 6 26 0" fill="none" stroke="#faf7f2" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="property-body">
+                <span class="tag flagship">Flagship · Island</span>
+                <h3>AegeanStay Kythnos</h3>
+                <div class="location">Kythnos, Cyclades</div>
+                <p>Our first and main hotel: whitewashed rooms above a quiet bay, a short ferry ride from Athens.</p>
+                <div class="amenities">
+                  <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+                  <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+                  <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+                  <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Naxos (island) -->
+            <article class="card property">
+              <div class="property-art" aria-hidden="true">
+                <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+                  <rect width="300" height="150" fill="#f1ece3" />
+                  <circle cx="70" cy="50" r="20" fill="#faf7f2" />
+                  <!-- Stone gate on a small hill -->
+                  <path d="M180 100V50h50v50h-12V64h-26v36z" fill="#c9d3be" />
+                  <path d="M0 105h300v45H0z" fill="#8a9a7b" />
+                  <path d="M40 128c10-6 18-6 26 0s18 6 26 0M200 124c10-6 18-6 26 0s18 6 26 0" fill="none" stroke="#faf7f2" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="property-body">
+                <span class="tag">Island</span>
+                <h3>AegeanStay Naxos</h3>
+                <div class="location">Naxos, Cyclades</div>
+                <p>Sandy beaches, long sunsets and simple, light-filled rooms close to the old town.</p>
+                <div class="amenities">
+                  <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+                  <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+                  <span class="amenity"><svg><use href="#i-breakfast" /></svg>Breakfast</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Pelion (mainland coast) -->
+            <article class="card property">
+              <div class="property-art" aria-hidden="true">
+                <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+                  <rect width="300" height="150" fill="#e6ebe0" />
+                  <!-- Green mountains meeting the sea -->
+                  <path d="M0 100l60-55 50 40 50-50 70 60 70-30v35H0z" fill="#5f6f55" opacity="0.55" />
+                  <path d="M0 105h300v45H0z" fill="#8a9a7b" />
+                  <path d="M60 128c10-6 18-6 26 0s18 6 26 0M190 132c10-6 18-6 26 0s18 6 26 0" fill="none" stroke="#faf7f2" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="property-body">
+                <span class="tag">Mainland coast</span>
+                <h3>AegeanStay Pelion</h3>
+                <div class="location">Pelion coast, Magnesia</div>
+                <p>Where green mountains meet the sea. Easy to reach by car, with free on-site parking.</p>
+                <div class="amenities">
+                  <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+                  <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+                  <span class="amenity"><svg><use href="#i-parking" /></svg>Free parking</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Chania, Crete (island) -->
+            <article class="card property">
+              <div class="property-art" aria-hidden="true">
+                <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+                  <rect width="300" height="150" fill="#f1ece3" />
+                  <!-- A small lighthouse -->
+                  <rect x="200" y="50" width="16" height="55" fill="#faf7f2" />
+                  <path d="M196 50h24l-4-10h-16z" fill="#5f6f55" />
+                  <path d="M0 105h300v45H0z" fill="#8a9a7b" />
+                  <path d="M30 128c10-6 18-6 26 0s18 6 26 0M130 134c10-6 18-6 26 0s18 6 26 0" fill="none" stroke="#faf7f2" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="property-body">
+                <span class="tag">Island</span>
+                <h3>AegeanStay Chania</h3>
+                <div class="location">Chania, Crete</div>
+                <p>A calm retreat near the old Venetian harbour, with a garden pool and a small spa.</p>
+                <div class="amenities">
+                  <span class="amenity"><svg><use href="#i-sea" /></svg>Sea</span>
+                  <span class="amenity"><svg><use href="#i-pool" /></svg>Pool</span>
+                  <span class="amenity"><svg><use href="#i-spa" /></svg>Spa</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="center view-all">
+            <a class="btn btn-outline" href="/properties">View all properties →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 3. Our services (all details match the kb/ files) ===== -->
+      <section id="services" class="services">
+        <div class="container">
+          <div class="eyebrow">Our services</div>
+          <h2>Everything you need to slow down</h2>
+          <p class="lead">Simple comforts, done well, at every AegeanStay hotel.</p>
+
+          <div class="grid grid-3">
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-sea" /></svg></div>
+              <h3>Sea &amp; beach</h3>
+              <p>Most properties offer sun loungers and beach towels at no extra charge.</p>
+              <div class="detail">Loungers &amp; towels included</div>
+            </div>
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-room" /></svg></div>
+              <h3>Calm rooms</h3>
+              <p>Free Wi-Fi in all rooms and public areas. Room service from the all-day menu.</p>
+              <div class="detail">Room service 11:00–23:00</div>
+            </div>
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-breakfast" /></svg></div>
+              <h3>Breakfast</h3>
+              <p>A buffet breakfast every day. It is included in most rates. Please check your booking.</p>
+              <div class="detail">Daily 07:30–10:30</div>
+            </div>
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-pool" /></svg></div>
+              <h3>Outdoor pools</h3>
+              <p>Swim, read, repeat. A children's pool is available at most properties.</p>
+              <div class="detail">Open 09:00–19:00</div>
+            </div>
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-spa" /></svg></div>
+              <h3>Spa &amp; wellness</h3>
+              <p>Massages and treatments at selected hotels. We recommend booking in advance at reception.</p>
+              <div class="detail">At selected hotels</div>
+            </div>
+            <div class="card service">
+              <div class="icon"><svg><use href="#i-transfer" /></svg></div>
+              <h3>Transfers &amp; parking</h3>
+              <p>
+                Private airport or port transfers for an extra fee. Please share your arrival details at least 24 hours
+                in advance. Free parking at mainland hotels and limited parking on request on the islands.
+              </p>
+              <div class="detail">Book transfers 24h ahead</div>
+            </div>
+          </div>
+
+          <!-- Key policies, straight from the knowledge base. -->
+          <div class="good-to-know">
+            <div><strong>15:00</strong><span>Check-in from. Early check-in on request, if available</span></div>
+            <div><strong>11:00</strong><span>Check-out until. Late check-out until 14:00 for an extra fee</span></div>
+            <div><strong>7 days</strong><span>Free cancellation up to 7 days before check-in</span></div>
+            <div><strong>20%</strong><span>Deposit to confirm. The rest is charged at check-in</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 4. About us + key numbers ===== -->
+      <section id="about">
+        <div class="container about-grid">
+          <div>
+            <div class="eyebrow">About us</div>
+            <h2>Small hotels, big calm</h2>
+            <p class="lead">
+              We started on Kythnos with one idea: a hotel should feel like an exhale. Today AegeanStay
+              is a group of boutique seaside hotels on the islands and the mainland coast, each one
+              quiet, personal and close to the water.
+            </p>
+            <p class="lead">
+              Our front desk is open 24/7, and our team supports guests in Greek and English.
+              Families, pets up to 10 kg (in selected rooms) and guests who need accessible rooms are all welcome.
+            </p>
+          </div>
+          <div>
+            <div class="numbers">
+              <div class="number"><strong>6</strong><span>Seaside hotels</span></div>
+              <div class="number"><strong>24/7</strong><span>Front desk</span></div>
+              <div class="number"><strong>4.8</strong><span>Average guest rating</span></div>
+              <div class="number"><strong>12k+</strong><span>Guests each year</span></div>
+            </div>
+            <span class="sample-note">Sample figures for this demo</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 5. Guest reviews (fake, clearly marked) ===== -->
+      <section id="reviews" class="reviews">
+        <div class="container">
+          <div class="eyebrow">Guest reviews</div>
+          <h2>What our guests say</h2>
+          <span class="sample-note">Sample reviews</span>
+
+          <div class="grid grid-3">
+            <figure class="card review">
+              <div class="stars">★★★★★</div>
+              <blockquote>"The quietest week we've had in years. Breakfast on the terrace, then nothing but the sea."</blockquote>
+              <cite>Maria K. · AegeanStay Kythnos</cite>
+            </figure>
+            <figure class="card review">
+              <div class="stars">★★★★★</div>
+              <blockquote>"Beautiful, simple rooms and a pool we had almost to ourselves in the afternoons."</blockquote>
+              <cite>James &amp; Lucy · AegeanStay Naxos</cite>
+            </figure>
+            <figure class="card review">
+              <div class="stars">★★★★☆</div>
+              <blockquote>"The spa massage after a mountain walk was perfect. Easy parking too."</blockquote>
+              <cite>Nikos P. · AegeanStay Pelion</cite>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 6. Contact (only details that exist in kb/) ===== -->
+      <section id="contact">
+        <div class="container contact-grid">
+          <div>
+            <div class="eyebrow">Contact</div>
+            <h2>We're here, day and night</h2>
+            <ul class="contact-list">
+              <li>
+                <svg><use href="#i-mail" /></svg>
+                <div>
+                  <strong>Email</strong>
+                  <span><a href="mailto:stay@aegeanstay.example">stay@aegeanstay.example</a></span>
+                </div>
+              </li>
+              <li>
+                <svg><use href="#i-phone" /></svg>
+                <div>
+                  <strong>Phone</strong>
+                  <span>Use the number on your booking confirmation</span>
+                </div>
+              </li>
+              <li>
+                <svg><use href="#i-clock" /></svg>
+                <div>
+                  <strong>Front desk</strong>
+                  <span>Open 24/7. Arriving after 22:00? Just let us know your arrival time</span>
+                </div>
+              </li>
+              <li>
+                <svg><use href="#i-chat" /></svg>
+                <div>
+                  <strong>Languages</strong>
+                  <span>Greek and English</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card chat-card">
+            <h3>Questions about your stay?</h3>
+            <p>
+              Our assistant can help with bookings, check-in and check-out, cancellations, amenities and more,
+              in Greek or English.
+            </p>
+            <a class="btn btn-primary" href="/">💬 Chat with our assistant</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+      <div class="container footer-row">
+        <div>
+          <div class="disclaimer">Demo website for a fictional hotel group.</div>
+          <div>AegeanStay Hotels is not a real company. Reviews and figures are samples.</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+          <a class="kpi-link" href="/properties">All properties</a>
+          <a class="kpi-link" href="/dashboard">📊 KPI Dashboard</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating chat button, always visible in the corner. -->
+    <a class="btn btn-primary chat-float" href="/">💬 Chat with our assistant</a>
+  </body>
+</html>
