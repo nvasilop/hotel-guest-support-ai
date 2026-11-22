@@ -5,9 +5,12 @@ fictional hotel group called **AegeanStay Hotels**.
 
 ## Live Demo
 
-Try the hosted version of StayFlow AI here:
+- Hotel website (demo): https://hotel-guest-support-ai.onrender.com/hotel
+- All properties: https://hotel-guest-support-ai.onrender.com/properties
+- Chat with StayFlow AI: https://hotel-guest-support-ai.onrender.com/
+- KPI Dashboard: https://hotel-guest-support-ai.onrender.com/dashboard
 
-https://hotel-guest-support-ai.onrender.com 
+Start from the hotel website and click “Chat with our assistant” to talk to the bot. The first load can take up to a minute because the free server sleeps when nobody uses it.
 
 ## Project Overview
 
@@ -64,6 +67,8 @@ Agent Flow (backend/agent.py)
    ▼
 Response with metadata (answer, decision, intent, language, evidence_level, sources, escalation_summary)
 ```
+
+Besides the chat page, `frontend/` now also has `hotel.html` and `properties.html`, a small demo website for AegeanStay Hotels. I made sure their information (check-in/check-out times, amenities, cancellation policy, contact) matches the files in `kb/`.
 
 ## Agent Flow
 
